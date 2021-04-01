@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Master</title>
+    <link rel="stylesheet" href="./css/style.css" />
+</head>
+
+<body>
+    <section id="typing-master">
+        <div class="textInput-Fragment" id="mainFrag"></div>
+        <div class="hidden" id="fragMsg">Click to activate...</div>
+        <div class="hide" id="wordDiv">
+            Your Input: <span id="wordSpan"></span>
+        </div>
+        <div>
+            <div class="centerDiv">
+                Words Count: <input type="range" id="msgFragWordCount" value="15" min="15" max="60"
+                    onchange="range(this)" step="1">
+                <span id="msgFragWordCountValue">15</span>
+            </div>
+            <div class="centerDiv">
+                Word Length: <input type="range" id="wordLength" value="5" min="4" max="10" onchange="range(this)"
+                    step="1">
+                <span id="wordLengthValue">5</span>
+            </div>
+            <div class="centerDiv">
+                Typing By: <input type="radio" id="char" name="type" onchange="range(this)" checked> Char
+                <input type="radio" id="word" name="type" onchange="range(this)"> Word
+            </div>
+            <div class="results centerDiv">
+                <div id="speed">Speed: 0.0</div>
+                <div id="errors">Errors: 0</div>
+            </div>
+            <div id="currentWordDiv" class="centerDiv">
+                Current Word: <input type="text" id="currentWord" onkeyup="range(this)" onInput="checkLength()"
+                    value="a">
+            </div>
+            <div id="blinkControlDiv" class="centerDiv">
+                Blink On/Off <input type="checkbox" id="blinkControl" onchange="range(this)" checked>
+            </div>
+        </div>
+        <div class="centerDiv">
+            <h4>Feel free to email me about anything. Have any suggestion or want some advice?
+                <a href="mailto:kingtechnologies2017@gmail.com">
+                    <i class="far fa-envelope-open contact"></i>
+                </a>
+            </h4>
+        </div>
+    </section>
+    <script src="./js/script.js"></script>
+</body>
+
+</html>
