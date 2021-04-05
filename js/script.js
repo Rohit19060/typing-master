@@ -1,9 +1,10 @@
 const mainFrag = document.querySelector("#mainFrag")
 const fragMsg = document.querySelector("#fragMsg")
 const speed = document.querySelector("#speed");
+const avgSpeed = document.querySelector("#avgSpeed");
 const errorsElement = document.querySelector("#errors");
 let wordArray = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l",
-    "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
+    "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"
 ]
 let symbol = [" ", ",", ".", "Backspace", "Delete", "'", '"']
 let currentWord = "a";
@@ -54,14 +55,12 @@ const range = (val) => {
             case "char":
                 type = "char";
                 document.querySelector("#currentWordDiv").classList.toggle("hide");
-                document.querySelector("#blinkControlDiv").classList.toggle("hide");
                 document.querySelector("#wordDiv").classList.add("hide");
                 blink = true
                 break
             case "word":
                 type = "word";
                 document.querySelector("#currentWordDiv").classList.toggle("hide");
-                document.querySelector("#blinkControlDiv").classList.toggle("hide");
                 document.querySelector("#wordDiv").classList.remove("hide");
                 blink = false
                 break
@@ -160,24 +159,25 @@ window.addEventListener("keydown", (e) => {
                         if (msgFragWord <= 1 && timer) {
                             let temp = 300 / seconds;
                             wordCount = wordCount * temp;
+                            console.log(wordCount)
                             speedArray.push(parseFloat(wordCount.toFixed(3)))
                             let sum = 0;
                             speedArray.forEach(element => {
                                 sum += element;
                             });
                             let avg = sum / speedArray.length;
+                            errorsElement.innerHTML = `Errors: ${errors}`;
+                            speed.innerHTML = `Speed: ${wordCount.toFixed(1)}`;
+                            avgSpeed.innerHTML = `Avg Speed: ${avg.toFixed(1)}`;
+                            currentWord = wordArray[wordArray.indexOf(currentWord) + 1]
+                            if (currentWord === undefined) {
+                                currentWord = wordArray[0];
+                            }
+                            document.querySelector("#currentWord").value = currentWord;
                             clearInterval(timer);
                             timer = null
                             seconds = 0;
                             wordCount = 0;
-                            errorsElement.innerHTML = `Errors: ${errors}`;
-                            speed.innerHTML = `Speed: ${avg.toFixed(1)}`;
-                            if (wordArray.indexOf(currentWord) !== wordArray.length) {
-                                currentWord = wordArray[wordArray.indexOf(currentWord) + 1]
-                                document.querySelector("#currentWord").value = currentWord;
-                            } else {
-                                currentWord = wordArray[0];
-                            }
                         }
                     }
                     arrFrag[curCount].classList.add("correct");
@@ -193,12 +193,6 @@ window.addEventListener("keydown", (e) => {
                     curCount++;
                     curCount < arrFrag.length ? blink ? arrFrag[curCount].classList.add("blinkOn") : arrFrag[curCount].classList.add("blinkOff") : null
                     if (msgFragWord <= 1) {
-                        if (wordArray.indexOf(currentWord) !== wordArray.length) {
-                            currentWord = wordArray[wordArray.indexOf(currentWord) + 1]
-                            document.querySelector("#currentWord").value = currentWord;
-                        } else {
-                            currentWord = wordArray[0];
-                        }
                         renderNewQuote()
                     }
                 } else {
@@ -504,11 +498,47 @@ const getRandomQuote = () => {
     let result = []
     let res = shuffle(words)
     if (type === "char") {
-        for (let index = 0; index < res.length; index++) {
-            if (res[index].includes(currentWord) && res[index].length == wordLength) {
-                result.push(res[index])
+        if (!isNaN(currentWord * 1)) {
+            for (let index = 0; index < msgFragWordCount; index++) {
+                let semaphore = true;
+                while (semaphore) {
+                    let number = randomFixedInteger(wordLength)
+                    let a = number.toString().split("");
+                    for (let index = 0; index < a.length; index++) {
+                        const element = a[index];
+                        if (element == currentWord) {
+                            result.push(a.join(""))
+                            semaphore = false;
+                            break
+                        }
+                    }
+                }
                 if (result.length >= msgFragWordCount) {
                     break;
+                }
+            }
+        } else if (currentWord == currentWord.toUpperCase()) {
+            for (let index = 0; index < res.length; index++) {
+                if (res[index].includes(currentWord.toLowerCase()) && res[index].length == wordLength) {
+                    let a = res[index].split("");
+                    for (let index = 0; index < a.length; index++) {
+                        if (a[index] === currentWord.toLowerCase()) {
+                            a[index] = a[index].toUpperCase();
+                        }
+                    }
+                    result.push(a.join(""))
+                    if (result.length >= msgFragWordCount) {
+                        break;
+                    }
+                }
+            }
+        } else if (currentWord == currentWord.toLowerCase()) {
+            for (let index = 0; index < res.length; index++) {
+                if (res[index].includes(currentWord) && res[index].length == wordLength) {
+                    result.push(res[index])
+                    if (result.length >= msgFragWordCount) {
+                        break;
+                    }
                 }
             }
         }
@@ -526,4 +556,10 @@ const getRandomQuote = () => {
     msgFragWord = result.length;
     return result.join(" ")
 }
+
+const randomFixedInteger = (length) => {
+    return Math.floor(Math.pow(10, length - 1) + Math.random() * (Math.pow(10, length) - Math.pow(10, length - 1) - 1));
+}
+
+
 renderNewQuote()
