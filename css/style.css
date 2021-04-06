@@ -249,7 +249,7 @@ input[type="text"] {
     color: rgb(42, 182, 42);
 }
 
-#mainFrag {
+#main {
     -moz-user-select: none;
     -ms-user-select: none;
     -youbkit-touch-callout: none;
@@ -283,7 +283,7 @@ input[type="text"] {
     }
 }
 
-#msgFragWordCount {
+#msgWordCount {
     min-width: 54%;
 }
 

@@ -14,9 +14,9 @@
         <h1 class="text-center mt-3"> King's Typing Master</h1>
         <div>
             <div class="centerDiv">
-                Words Count: <input type="range" id="msgFragWordCount" value="15" min="1" max="60"
-                    onchange="range(this)" step="1">
-                <span id="msgFragWordCountValue">15</span>
+                Words Count: <input type="range" id="msgWordCount" value="15" min="1" max="60" onchange="range(this)"
+                    step="1">
+                <span id="msgWordCountValue">15</span>
             </div>
             <div class="centerDiv">
                 Word Length: <input type="range" id="wordLength" value="5" min="4" max="10" onchange="range(this)"
@@ -30,11 +30,11 @@
             <div class="results">
                 <div id="speed">Speed: 0.0</div>
                 <div id="avgSpeed">Avg Speed: 0.0</div>
-                <div id="errors">Errors: 0</div>
+                <div id="error">Errors: 0</div>
             </div>
         </div>
-        <div class="textInput-Fragment" id="mainFrag"></div>
-        <div class="hidden my-2" id="fragMsg">Click to activate...</div>
+        <div class="textInput-ment" id="main"></div>
+        <div class="hidden my-2" id="msg">Click to activate...</div>
         <div class="hide" id="wordDiv">
             Your Input:&nbsp; <span id="wordSpan"></span>
         </div>

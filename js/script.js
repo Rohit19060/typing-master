@@ -1,231 +1,63 @@
-const mainFrag = document.querySelector("#mainFrag")
-const fragMsg = document.querySelector("#fragMsg")
-const speed = document.querySelector("#speed");
-const avgSpeed = document.querySelector("#avgSpeed");
-const errorsElement = document.querySelector("#errors");
-let wordArray = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l",
-    "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"
-]
-let symbol = [" ", ",", ".", "Backspace", "Delete", "'", '"']
-let currentWord = "a";
-let curCount;
-let msgFragWord;
-let seconds = 0;
-let msgFragWordCount = 15;
-let timer;
-let errors = 0;
-let wordCount = 0;
-let wordLength = 5;
+// Document Constants
+const avgSpeed = document.getElementById("avgSpeed");
+const blinkInput = document.getElementById("blinkControl");
+const charInput = document.getElementById("char");
+const currentWordDiv = document.getElementById("currentWordDiv");
+const currentWordInput = document.getElementById("currentWord");
+const errorElement = document.getElementById("error");
+const main = document.getElementById("main")
+const msg = document.getElementById("msg")
+const msgWordCounter = document.getElementById("msgWordCount");
+const msgWordCounterSpan = document.getElementById("msgWordCountValue");
+const speed = document.getElementById("speed");
+const wordDiv = document.getElementById("wordDiv");
+const wordInput = document.getElementById("word");
+const wordLengthInput = document.getElementById("wordLength");
+const wordLengthSpan = document.getElementById("wordLengthValue");
+const wordSpan = document.getElementById("wordSpan");
+
+// Constants
+const symbols = [" ", ",", ".", "Backspace", "Delete", "'", '"']
+const charArray = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
+
+// Variables
 let blink = true;
+let curCount;
+let currentWord = "a";
+let error = 0;
+let msgWord;
+let msgWordCount = 15;
+let pause = false;
 let pauseSeconds = 2;
 let pauseSecondsInterval;
-let pause = false;
-let type = "char";
+let seconds = 0;
 let speedArray = []
+let timer;
+let type = "char";
 let word = "";
-const range = (val) => {
-    let temp2 = `#${val.id}`
-    let temp = document.querySelector(temp2).value;
-    if (val.id == "blinkControl") {
-        let checked = document.querySelector(temp2).checked;
-        blink = checked ? true : false;
-        const arrFrag = mainFrag.querySelectorAll("span");
-        arrFrag.forEach(element => {
-            if (element.classList.contains("blinkOn") || element.classList.contains("blinkOff")) {
-                element.classList.toggle("blinkOn");
-                element.classList.toggle("blinkOff");
-            }
-        });
-    } else {
-        switch (val.id) {
-            case "currentWord":
-                currentWord = temp;
-                document.querySelector(temp2).value = currentWord;
-                errors = 0
-                errorsElement.innerHTML = `Errors: ${errors}`;
-                break;
-            case "msgFragWordCount":
-                msgFragWordCount = temp;
-                document.querySelector("#msgFragWordCountValue").innerText = msgFragWordCount;
-                break;
-            case "wordLength":
-                wordLength = temp;
-                document.querySelector("#wordLengthValue").innerText = wordLength;
-                break;
-            case "char":
-                type = "char";
-                document.querySelector("#currentWordDiv").classList.toggle("hide");
-                document.querySelector("#wordDiv").classList.add("hide");
-                blink = true
-                break
-            case "word":
-                type = "word";
-                document.querySelector("#currentWordDiv").classList.toggle("hide");
-                document.querySelector("#wordDiv").classList.remove("hide");
-                blink = false
-                break
-            default:
-                break;
-        }
-        renderNewQuote();
-    }
-    document.querySelector(temp2).blur();
-}
+let wordCount = 0;
+let wordLength = 5;
 
+// Utilities
+const getLocal = (element) => {
+    return localStorage.getItem(element)
+}
+const setLocal = (element, value) => {
+    localStorage.setItem(element, value);
+}
+const randomFixedInteger = (length) => {
+    return Math.floor(Math.pow(10, length - 1) + Math.random() * (Math.pow(10, length) - Math.pow(10, length - 1) - 1));
+}
 const checkLength = () => {
-    let fieldLength = document.getElementById('currentWord').value;
+    let fieldLength = currentWordInput.value;
     if (fieldLength.length <= 1) {
         return true;
     } else {
-        let str = document.getElementById('currentWord').value;
+        let str = currentWordInput.value;
         str = str.substring(0, str.length - 1);
-        document.getElementById('currentWord').value = str;
+        currentWordInput.value = str;
     }
 }
-
-window.addEventListener("keydown", (e) => {
-    pause = false;
-    if (!timer) {
-        timer = window.setInterval(() => {
-            if (!pause) {
-                seconds++;
-            }
-        }, 200);
-    }
-    let key = e.key;
-
-    if (!mainFrag.classList.contains("disabled")) {
-        if (wordArray.includes(key) || symbol.includes(key)) {
-            const arrFrag = mainFrag.querySelectorAll("span");
-            if (type === "word") {
-                if (e.code === "Backspace") {
-                    word = word.slice(0, -1);
-                    document.querySelector("#wordSpan").innerText = word;
-                } else if (e.code === "Space") {
-                    if (arrFrag[curCount].innerText === word) {
-                        arrFrag[curCount].classList.remove("correctWord")
-                        arrFrag[curCount].classList.add("correct")
-                    } else {
-                        arrFrag[curCount].classList.remove("wrongWord")
-                        arrFrag[curCount].classList.add("incorrect")
-                    }
-                    arrFrag[curCount].classList.remove("blinkOn");
-                    arrFrag[curCount].classList.remove("blinkOff");
-                    word = ""
-                    document.querySelector("#wordSpan").innerText = word;
-                    wordCount++;
-                    msgFragWord--;
-                    if (msgFragWord <= 1 && timer) {
-                        let temp = 300 / seconds;
-                        wordCount = wordCount * temp;
-                        speedArray.push(parseFloat(wordCount.toFixed(3)))
-                        let sum = 0;
-                        speedArray.forEach(element => {
-                            sum += element;
-                        });
-                        let avg = sum / speedArray.length;
-                        clearInterval(timer);
-                        timer = null
-                        seconds = 0;
-                        wordCount = 0;
-                        errorsElement.innerHTML = `Errors: ${errors}`;
-                        speed.innerHTML = `Speed: ${avg.toFixed(1)}`;
-                    }
-                    curCount++;
-                    arrFrag[curCount].classList.add("blinkOff");
-                } else {
-                    word = word + key;
-                    document.querySelector("#wordSpan").innerText = word;
-                }
-                if (e.code !== "Space") {
-                    if (arrFrag[curCount].innerText.includes(word)) {
-                        if (arrFrag[curCount].classList.contains("wrongWord")) {
-                            arrFrag[curCount].classList.remove("wrongWord");
-                        }
-                    } else {
-                        if (!arrFrag[curCount].classList.contains("wrongWord")) {
-                            arrFrag[curCount].classList.add("wrongWord");
-                        }
-                        errors++;
-                        document.querySelector("#errors").innerText = `Errors: ${errors}`;
-                    }
-                }
-                msgFragWord <= 1 ? renderNewQuote() : null
-            } else {
-                if (e.key === arrFrag[curCount].innerText || e.code === "Space" && arrFrag[curCount].innerText === "␣") {
-                    if (e.code === "Space") {
-                        wordCount++;
-                        msgFragWord--;
-                        if (msgFragWord <= 1 && timer) {
-                            let temp = 300 / seconds;
-                            wordCount = wordCount * temp;
-                            console.log(wordCount)
-                            speedArray.push(parseFloat(wordCount.toFixed(3)))
-                            let sum = 0;
-                            speedArray.forEach(element => {
-                                sum += element;
-                            });
-                            let avg = sum / speedArray.length;
-                            errorsElement.innerHTML = `Errors: ${errors}`;
-                            speed.innerHTML = `Speed: ${wordCount.toFixed(1)}`;
-                            avgSpeed.innerHTML = `Avg Speed: ${avg.toFixed(1)}`;
-                            currentWord = wordArray[wordArray.indexOf(currentWord) + 1]
-                            if (currentWord === undefined) {
-                                currentWord = wordArray[0];
-                            }
-                            document.querySelector("#currentWord").value = currentWord;
-                            clearInterval(timer);
-                            timer = null
-                            seconds = 0;
-                            wordCount = 0;
-                        }
-                    }
-                    arrFrag[curCount].classList.add("correct");
-                    arrFrag.forEach(element => {
-                        if (element.classList.contains("wrong")) {
-                            arrFrag[curCount].classList.remove("correct");
-                            element.classList.remove("wrong")
-                            element.classList.add("incorrect")
-                        }
-                    });
-                    arrFrag[curCount].classList.remove("blinkOn");
-                    arrFrag[curCount].classList.remove("blinkOff");
-                    curCount++;
-                    curCount < arrFrag.length ? blink ? arrFrag[curCount].classList.add("blinkOn") : arrFrag[curCount].classList.add("blinkOff") : null
-                    if (msgFragWord <= 1) {
-                        renderNewQuote()
-                    }
-                } else {
-                    arrFrag[curCount].classList.add("wrong");
-                    errors++;
-                    document.querySelector("#errors").innerText = `Errors: ${errors}`;
-                }
-            }
-
-        }
-    }
-    if (!pauseSecondsInterval) {
-        pauseSecondsInterval = window.setInterval(() => {
-            pauseSeconds--;
-            if (pauseSeconds <= 0) {
-                pause = true
-            }
-        }, 1000);
-    }
-})
-
-mainFrag.addEventListener("click", () => {
-    if (mainFrag.classList.contains("disabled")) {
-        mainFrag.classList.remove("disabled");
-        fragMsg.classList.add("hidden");
-        fragMsg.classList.remove("show");
-    } else {
-        fragMsg.classList.remove("hidden");
-        fragMsg.classList.add("show");
-        mainFrag.classList.add("disabled");
-    }
-})
-
 const shuffle = (array) => {
     let currentIndex = array.length,
         temporaryValue, randomIndex;
@@ -239,34 +71,282 @@ const shuffle = (array) => {
     return array;
 }
 
-const renderNewQuote = () => {
+
+// Working with local Storage to get/set setting values
+if (getLocal("currentWord") === null) {
+    setLocal("currentWord", "a");
+} else {
+    currentWord = getLocal("currentWord");
+    currentWordInput.value = currentWord;
+}
+if (getLocal("msgWordCount") === null) {
+    setLocal("msgWordCount", 15);
+} else {
+    msgWordCount = getLocal("msgWordCount");
+    msgWordCounter.value = msgWordCount;
+    msgWordCounterSpan.innerText = msgWordCount;
+}
+if (getLocal("wordLength") === null) {
+    setLocal("wordLength", 5);
+} else {
+    wordLength = getLocal("wordLength");
+    wordLengthInput.value = wordLength;
+    wordLengthSpan.innerText = wordLength;
+}
+if (getLocal("blink") === null) {
+    setLocal("blink", true);
+} else {
+    blink = getLocal("blink");
+    if (blink == "true") {
+        blinkInput.checked = true;
+        blink = true
+    } else {
+        blinkInput.checked = false;
+        blink = false
+    }
+}
+if (getLocal("type") === null) {
+    setLocal("type", "char");
+} else {
+    type = getLocal("type");
+    if (type == "char") {
+        charInput.checked = true;
+        wordInput.checked = false;
+        currentWordDiv.classList.remove("hide");
+        wordDiv.classList.add("hide");
+    } else {
+        charInput.checked = false;
+        wordInput.checked = true;
+        currentWordDiv.classList.add("hide");
+        wordDiv.classList.remove("hide");
+    }
+}
+
+const range = (val) => {
+    let temp = document.getElementById(val.id).value;
+    if (val.id == "blinkControl") {
+        blink = blinkInput.checked;
+        setLocal("blink", blink)
+        const arr = main.querySelectorAll("span");
+        arr.forEach(element => {
+            if (element.classList.contains("blinkOn") || element.classList.contains("blinkOff")) {
+                element.classList.toggle("blinkOn");
+                element.classList.toggle("blinkOff");
+            }
+        });
+    } else {
+        switch (val.id) {
+            case "currentWord":
+                currentWord = temp;
+                setLocal("currentWord", currentWord);
+                currentWordInput.value = currentWord;
+                error = 0
+                errorElement.innerHTML = `Errors: ${error}`;
+                break;
+            case "msgWordCount":
+                msgWordCount = temp;
+                setLocal("msgWordCount", msgWordCount);
+                msgWordCounterSpan.innerText = msgWordCount;
+                break;
+            case "wordLength":
+                wordLength = temp;
+                setLocal("wordLength", wordLength);
+                wordLengthSpan.innerText = wordLength;
+                break;
+            case "char":
+                type = "char";
+                setLocal("type", "char");
+                currentWordDiv.classList.remove("hide");
+                wordDiv.classList.add("hide");
+                blink = true
+                break
+            case "word":
+                type = "word";
+                setLocal("type", "word");
+                currentWordDiv.classList.add("hide");
+                wordDiv.classList.remove("hide");
+                blink = false
+                break
+            default:
+                break;
+        }
+        renderNewWords();
+    }
+    document.getElementById(val.id).blur();
+}
+
+
+
+window.addEventListener("keydown", (e) => {
+    pause = false;
+    if (!timer) {
+        timer = window.setInterval(() => {
+            if (!pause) {
+                seconds++;
+            }
+        }, 200);
+    }
+    let key = e.key;
+    if (!main.classList.contains("disabled")) {
+        if (charArray.includes(key) || symbols.includes(key)) {
+            const arr = main.querySelectorAll("span");
+            if (type === "word") {
+                if (e.code === "Backspace") {
+                    word = word.slice(0, -1);
+                    wordSpan.innerText = word;
+                } else if (e.code === "Space") {
+                    if (arr[curCount].innerText === word) {
+                        arr[curCount].classList.remove("correctWord")
+                        arr[curCount].classList.add("correct")
+                    } else {
+                        arr[curCount].classList.remove("wrongWord")
+                        arr[curCount].classList.add("incorrect")
+                    }
+                    arr[curCount].classList.remove("blinkOn");
+                    arr[curCount].classList.remove("blinkOff");
+                    word = ""
+                    wordSpan.innerText = word;
+                    wordCount++;
+                    msgWord--;
+                    if (msgWord <= 1 && timer) {
+                        let temp = 300 / seconds;
+                        wordCount = wordCount * temp;
+                        speedArray.push(parseFloat(wordCount.toFixed(3)))
+                        let sum = 0;
+                        speedArray.forEach(element => {
+                            sum += element;
+                        });
+                        let avg = sum / speedArray.length;
+                        clearInterval(timer);
+                        timer = null
+                        seconds = 0;
+                        wordCount = 0;
+                        errorElement.innerHTML = `Errors: ${error}`;
+                        speed.innerHTML = `Speed: ${avg.toFixed(1)}`;
+                    }
+                    curCount++;
+                    arr[curCount].classList.add("blinkOff");
+                } else {
+                    word = word + key;
+                    wordSpan.innerText = word;
+                }
+                if (e.code !== "Space") {
+                    if (arr[curCount].innerText.includes(word)) {
+                        if (arr[curCount].classList.contains("wrongWord")) {
+                            arr[curCount].classList.remove("wrongWord");
+                        }
+                    } else {
+                        if (!arr[curCount].classList.contains("wrongWord")) {
+                            arr[curCount].classList.add("wrongWord");
+                        }
+                        error++;
+                        errorElement.innerText = `Errors: ${error}`;
+                    }
+                }
+                msgWord <= 1 ? renderNewWords() : null
+            } else {
+                if (e.key === arr[curCount].innerText || e.code === "Space" && arr[curCount].innerText === "␣") {
+                    if (e.code === "Space") {
+                        wordCount++;
+                        msgWord--;
+                        if (msgWord <= 1 && timer) {
+                            let temp = 300 / seconds;
+                            wordCount = wordCount * temp;
+                            speedArray.push(parseFloat(wordCount.toFixed(3)))
+                            let sum = 0;
+                            speedArray.forEach(element => {
+                                sum += element;
+                            });
+                            let avg = sum / speedArray.length;
+                            errorElement.innerHTML = `Errors: ${error}`;
+                            speed.innerHTML = `Speed: ${wordCount.toFixed(1)}`;
+                            avgSpeed.innerHTML = `Avg Speed: ${avg.toFixed(1)}`;
+                            currentWord = charArray[charArray.indexOf(currentWord) + 1]
+                            setLocal("currentWord", currentWord);
+                            if (currentWord === undefined) {
+                                currentWord = charArray[0];
+                                setLocal("currentWord", currentWord);
+                            }
+                            currentWordInput.value = currentWord;
+                            clearInterval(timer);
+                            timer = null
+                            seconds = 0;
+                            wordCount = 0;
+                        }
+                    }
+                    arr[curCount].classList.add("correct");
+                    arr.forEach(element => {
+                        if (element.classList.contains("wrong")) {
+                            arr[curCount].classList.remove("correct");
+                            element.classList.remove("wrong")
+                            element.classList.add("incorrect")
+                        }
+                    });
+                    arr[curCount].classList.remove("blinkOn");
+                    arr[curCount].classList.remove("blinkOff");
+                    curCount++;
+                    curCount < arr.length ? blink ? arr[curCount].classList.add("blinkOn") : arr[curCount].classList.add("blinkOff") : null
+                    if (msgWord <= 1) {
+                        renderNewWords()
+                    }
+                } else {
+                    arr[curCount].classList.add("wrong");
+                    error++;
+                    errorElement.innerText = `Errors: ${error}`;
+                }
+            }
+        }
+    }
+    if (!pauseSecondsInterval) {
+        pauseSecondsInterval = window.setInterval(() => {
+            pauseSeconds--;
+            if (pauseSeconds <= 0) {
+                pause = true
+            }
+        }, 1000);
+    }
+})
+
+main.addEventListener("click", () => {
+    if (main.classList.contains("disabled")) {
+        main.classList.remove("disabled");
+        msg.classList.add("hidden");
+        msg.classList.remove("show");
+    } else {
+        msg.classList.remove("hidden");
+        msg.classList.add("show");
+        main.classList.add("disabled");
+    }
+});
+
+const renderNewWords = () => {
     curCount = 0;
-    const quote = getRandomQuote();
-    mainFrag.innerHTML = ""
+    const wordsArray = getRandomWords();
+    main.innerHTML = ""
     type === "char" ?
-        quote.split("").forEach(character => {
+        wordsArray.split("").forEach(character => {
             const characterSpan = document.createElement("span");
             if (character == " ") {
                 character = "␣";
             }
             characterSpan.innerText = character
-            mainFrag.appendChild(characterSpan);
+            main.appendChild(characterSpan);
             if (character == "␣") {
-                mainFrag.appendChild(document.createElement("wbr"));
+                main.appendChild(document.createElement("wbr"));
             }
         }) :
-        quote.split(" ").map((e) => {
+        wordsArray.split(" ").map((e) => {
             const characterSpan = document.createElement("span");
             characterSpan.innerText = e;
             characterSpan.classList.add("word");
-            mainFrag.appendChild(characterSpan);
-            mainFrag.appendChild(document.createElement("wbr"));
+            main.appendChild(characterSpan);
+            main.appendChild(document.createElement("wbr"));
         });
-    const arrFrag = mainFrag.querySelectorAll("span");
-    blink ? arrFrag[0].classList.add("blinkOn") : arrFrag[0].classList.add("blinkOff");
+    const arr = main.querySelectorAll("span");
+    blink ? arr[0].classList.add("blinkOn") : arr[0].classList.add("blinkOff");
 }
 
-const getRandomQuote = () => {
+const getRandomWords = () => {
     let words = ["article", "auxuliary", "abbey", "able", "about", "above", "absence", "absurd", "abuse", "accent", "acceptance", "accessoria", "accord", "account",
         "accountant", "accounting", "accusation", "accused", "achilles", "acid", "action", "activity", "actual", "acuminata", "added", "addition", "address",
         "adenoidea", "adjusted", "admiral", "admiralty", "adopt", "adorable", "advance", "advantage", "advice", "advised", "advisory", "aegis", "aemia", "affairs",
@@ -401,7 +481,7 @@ const getRandomQuote = () => {
         "policy", "pollution", "polo", "pony", "pool", "poplar", "poppy", "pore", "port", "porter", "position", "possession", "possessions", "post", "poster", "potato", "powder", "power", "precinct",
         "precise", "prejudice", "premiere", "present", "preservation", "preserved", "presidency", "president", "presidential", "press", "pressure", "pretences", "pretty", "prevent", "prevention", "price",
         "principle", "printer", "prism", "process", "processing", "procession", "processor", "product", "professor", "profit", "program", "programme", "progress", "project", "promise", "proof",
-        "propeller", "property", "proportioned", "prostitute", "protection", "protest", "protoytpe", "provoking", "public", "pudding", "puller", "pulp", "pump", "pumpkin", "pure", "purpose", "purposes",
+        "propeller", "property", "proportioned", "protection", "protest", "protoytpe", "provoking", "public", "pudding", "puller", "pulp", "pump", "pumpkin", "pure", "purpose", "purposes",
         "purpura", "push", "pussy", "qualified", "quantity", "quarter", "quaver", "quavering", "quavery", "quay", "quayage", "quayside", "queasily", "queasiness", "queasy", "quechua", "queen", "queenlike",
         "queenly", "queens", "queer", "queerly", "queerness", "quell", "quench", "quercus", "querier", "quern", "querulous", "querulously", "querulousness", "query", "quest", "quester", "question",
         "questionable", "questionably", "questioner", "questioning", "questioningly", "questionnaire", "quet", "queue", "queue_up", "quibble", "quiche", "quick", "quicken", "quickening", "quickie",
@@ -409,7 +489,7 @@ const getRandomQuote = () => {
         "quietist", "quietly", "quietness", "quietude", "quiety", "quiff", "quiffy", "quill", "quilt", "quilted", "quilting", "quince", "quincentenary", "quincentennial", "quinine", "quinquenial",
         "quintastic", "quintessence", "quintessential", "quintessentially", "quintet", "quintette", "quintillion", "quintuple", "quintuplet", "quip", "quirk", "quirkiness", "quirky", "quiscent",
         "quisling", "quit", "quite", "quits", "quittance", "quitter", "quiver", "quivering", "quixotic", "quiz", "quizmaster", "quizzer", "quizzical", "quizzically", "quoit", "quoits", "quorum", "quota",
-        "quotable", "quotation", "quote", "quoted", "quoteunquote", "quotha", "quothe", "quotidian", "quotient", "quran", "reflexivepro", "relativepro", "rabbit", "rabble", "race", "rack", "racket",
+        "quotable", "quotation", "wordsArray", "quoted", "quoteunquote", "quotha", "quothe", "quotidian", "quotient", "quran", "reflexivepro", "relativepro", "rabbit", "rabble", "race", "rack", "racket",
         "rackets", "racquet", "racquets", "radar", "radiation", "radio", "radiocommunication", "rage", "rail", "rain", "raiser", "raleigh", "rama", "ramrod", "range", "ranging", "rank", "ranking",
         "rankle", "rape", "rarebit", "rate", "rated", "rather", "ratherthan", "ravages", "raving", "rays", "reach", "reactor", "read", "reading", "ready", "real", "realise", "reality", "reap", "reason",
         "rebirth", "receiving", "reception", "recession", "recite", "record", "recorder", "recorderplayer", "recording", "redeemer", "reference", "reflection", "regard", "regent", "region", "regional",
@@ -499,7 +579,7 @@ const getRandomQuote = () => {
     let res = shuffle(words)
     if (type === "char") {
         if (!isNaN(currentWord * 1)) {
-            for (let index = 0; index < msgFragWordCount; index++) {
+            for (let index = 0; index < msgWordCount; index++) {
                 let semaphore = true;
                 while (semaphore) {
                     let number = randomFixedInteger(wordLength)
@@ -513,7 +593,7 @@ const getRandomQuote = () => {
                         }
                     }
                 }
-                if (result.length >= msgFragWordCount) {
+                if (result.length >= msgWordCount) {
                     break;
                 }
             }
@@ -527,7 +607,7 @@ const getRandomQuote = () => {
                         }
                     }
                     result.push(a.join(""))
-                    if (result.length >= msgFragWordCount) {
+                    if (result.length >= msgWordCount) {
                         break;
                     }
                 }
@@ -536,7 +616,7 @@ const getRandomQuote = () => {
             for (let index = 0; index < res.length; index++) {
                 if (res[index].includes(currentWord) && res[index].length == wordLength) {
                     result.push(res[index])
-                    if (result.length >= msgFragWordCount) {
+                    if (result.length >= msgWordCount) {
                         break;
                     }
                 }
@@ -546,20 +626,15 @@ const getRandomQuote = () => {
         for (let index = 0; index < res.length; index++) {
             if (res[index].length == wordLength) {
                 result.push(res[index])
-                if (result.length >= msgFragWordCount) {
+                if (result.length >= msgWordCount) {
                     break;
                 }
             }
         }
     }
     result.push("");
-    msgFragWord = result.length;
+    msgWord = result.length;
     return result.join(" ")
 }
 
-const randomFixedInteger = (length) => {
-    return Math.floor(Math.pow(10, length - 1) + Math.random() * (Math.pow(10, length) - Math.pow(10, length - 1) - 1));
-}
-
-
-renderNewQuote()
+renderNewWords()
