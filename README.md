@@ -1,13 +1,5 @@
 <h1 align="center"><a href="https://kingtechnologies.in/Typing%20Master">Typing Master</a></h1>
-<h3 align="center">Enhance your Typing speed and customize according to you</h3>
-
-## Table of Contents
-
-- [Links](#links)
-- [Screenshots](#screenshots)
-- [Built With](#built-with)
-- [Future Updates](#future-updates)
-- [Contact](#author)
+<p align="center">Enhance your Typing speed and customize according to you</p>
 
 ## Links
 
