@@ -33,6 +33,7 @@ let pauseSecondsInterval;
 let seconds = 0;
 let speedArray = []
 let timer;
+let blinkTimer;
 let type = "char";
 let word = "";
 let wordCount = 0;
@@ -122,6 +123,24 @@ if (getLocal("type") === null) {
     }
 }
 
+
+const blinkFun = (element) => {
+    element.classList.add("blink");
+    if (blink) {
+        if (blinkTimer) {
+            clearInterval(blinkTimer)
+            blinkTimer = null;
+        }
+        if (!blinkTimer) {
+            blinkTimer = window.setInterval(() => {
+                element.classList.toggle("blink");
+            }, 400);
+        }
+    } else {
+        clearInterval(blinkTimer)
+    }
+}
+
 const range = (val) => {
     let temp = document.getElementById(val.id).value;
     if (val.id == "blinkControl") {
@@ -129,9 +148,8 @@ const range = (val) => {
         setLocal("blink", blink)
         const arr = main.querySelectorAll("span");
         arr.forEach(element => {
-            if (element.classList.contains("blinkOn") || element.classList.contains("blinkOff")) {
-                element.classList.toggle("blinkOn");
-                element.classList.toggle("blinkOff");
+            if (element.classList.contains("blink")) {
+                blinkFun(element)
             }
         });
     } else {
@@ -158,14 +176,14 @@ const range = (val) => {
                 setLocal("type", "char");
                 currentWordDiv.classList.remove("hide");
                 wordDiv.classList.add("hide");
-                blink = true
+                // blink = true
                 break
             case "word":
                 type = "word";
                 setLocal("type", "word");
                 currentWordDiv.classList.add("hide");
                 wordDiv.classList.remove("hide");
-                blink = false
+                // blink = false
                 break
             default:
                 break;
@@ -202,8 +220,7 @@ window.addEventListener("keydown", (e) => {
                         arr[curCount].classList.remove("wrongWord")
                         arr[curCount].classList.add("incorrect")
                     }
-                    arr[curCount].classList.remove("blinkOn");
-                    arr[curCount].classList.remove("blinkOff");
+                    arr[curCount].classList.remove("blink");
                     word = ""
                     wordSpan.innerText = word;
                     wordCount++;
@@ -225,7 +242,7 @@ window.addEventListener("keydown", (e) => {
                         speed.innerHTML = `Speed: ${avg.toFixed(1)}`;
                     }
                     curCount++;
-                    arr[curCount].classList.add("blinkOff");
+                    blinkFun(arr[curCount])
                 } else {
                     word = word + key;
                     wordSpan.innerText = word;
@@ -282,10 +299,10 @@ window.addEventListener("keydown", (e) => {
                             element.classList.add("incorrect")
                         }
                     });
-                    arr[curCount].classList.remove("blinkOn");
-                    arr[curCount].classList.remove("blinkOff");
+                    arr[curCount].classList.remove("blink");
                     curCount++;
-                    curCount < arr.length ? blink ? arr[curCount].classList.add("blinkOn") : arr[curCount].classList.add("blinkOff") : null
+
+                    curCount < arr.length ? blinkFun(arr[curCount]) : null
                     if (msgWord <= 1) {
                         renderNewWords()
                     }
@@ -343,7 +360,7 @@ const renderNewWords = () => {
             main.appendChild(document.createElement("wbr"));
         });
     const arr = main.querySelectorAll("span");
-    blink ? arr[0].classList.add("blinkOn") : arr[0].classList.add("blinkOff");
+    blinkFun(arr[0])
 }
 
 const getRandomWords = () => {

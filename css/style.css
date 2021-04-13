@@ -225,16 +225,9 @@ input[type="text"] {
     color: rgba(151, 151, 151, 0.562);
 }
 
-.blinkOff {
+.blink {
     background-color: black;
     color: white;
-}
-
-.blinkOn {
-    animation: blinking 0.8s linear infinite;
-    background-color: black;
-    color: white;
-    opacity: 1;
 }
 
 .wrong {
