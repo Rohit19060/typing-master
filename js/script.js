@@ -15,11 +15,9 @@ const wordInput = document.getElementById("word");
 const wordLengthInput = document.getElementById("wordLength");
 const wordLengthSpan = document.getElementById("wordLengthValue");
 const wordSpan = document.getElementById("wordSpan");
-
 // Constants
 const symbols = [" ", ",", ".", "Backspace", "Delete", "'", '"']
 const charArray = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
-
 // Variables
 let blink = true;
 let curCount;
@@ -38,7 +36,6 @@ let type = "char";
 let word = "";
 let wordCount = 0;
 let wordLength = 5;
-
 // Utilities
 const getLocal = (element) => {
     return localStorage.getItem(element)
@@ -71,8 +68,6 @@ const shuffle = (array) => {
     }
     return array;
 }
-
-
 // Working with local Storage to get/set setting values
 if (getLocal("currentWord") === null) {
     setLocal("currentWord", "a");
@@ -122,8 +117,6 @@ if (getLocal("type") === null) {
         wordDiv.classList.remove("hide");
     }
 }
-
-
 const blinkFun = (element) => {
     element.classList.add("blink");
     if (blink) {
@@ -140,18 +133,13 @@ const blinkFun = (element) => {
         clearInterval(blinkTimer)
     }
 }
-
 const range = (val) => {
     let temp = document.getElementById(val.id).value;
     if (val.id == "blinkControl") {
         blink = blinkInput.checked;
         setLocal("blink", blink)
         const arr = main.querySelectorAll("span");
-        arr.forEach(element => {
-            if (element.classList.contains("blink")) {
-                blinkFun(element)
-            }
-        });
+        blinkFun(arr[curCount])
     } else {
         switch (val.id) {
             case "currentWord":
@@ -176,14 +164,12 @@ const range = (val) => {
                 setLocal("type", "char");
                 currentWordDiv.classList.remove("hide");
                 wordDiv.classList.add("hide");
-                // blink = true
                 break
             case "word":
                 type = "word";
                 setLocal("type", "word");
                 currentWordDiv.classList.add("hide");
                 wordDiv.classList.remove("hide");
-                // blink = false
                 break
             default:
                 break;
@@ -192,9 +178,6 @@ const range = (val) => {
     }
     document.getElementById(val.id).blur();
 }
-
-
-
 window.addEventListener("keydown", (e) => {
     pause = false;
     if (!timer) {
@@ -301,7 +284,6 @@ window.addEventListener("keydown", (e) => {
                     });
                     arr[curCount].classList.remove("blink");
                     curCount++;
-
                     curCount < arr.length ? blinkFun(arr[curCount]) : null
                     if (msgWord <= 1) {
                         renderNewWords()
@@ -323,7 +305,6 @@ window.addEventListener("keydown", (e) => {
         }, 1000);
     }
 })
-
 main.addEventListener("click", () => {
     if (main.classList.contains("disabled")) {
         main.classList.remove("disabled");
@@ -335,7 +316,6 @@ main.addEventListener("click", () => {
         main.classList.add("disabled");
     }
 });
-
 const renderNewWords = () => {
     curCount = 0;
     const wordsArray = getRandomWords();
@@ -362,7 +342,6 @@ const renderNewWords = () => {
     const arr = main.querySelectorAll("span");
     blinkFun(arr[0])
 }
-
 const getRandomWords = () => {
     let words = ["article", "auxuliary", "abbey", "able", "about", "above", "absence", "absurd", "abuse", "accent", "acceptance", "accessoria", "accord", "account",
         "accountant", "accounting", "accusation", "accused", "achilles", "acid", "action", "activity", "actual", "acuminata", "added", "addition", "address",
@@ -591,7 +570,8 @@ const getRandomWords = () => {
         "zoozoo", "zopilote", "zorastrain", "zori", "zoroaster", "zoroastrian", "zoroastrianism", "zoster", "zucchini", "zulu", "zumba", "zygodactyl", "zygodactylic", "zygodactylous", "zygogenesis",
         "zygogenetic", "zygoma", "zygomatic", "zygomorphic", "zygomorphism", "zygomorphous", "zygosis", "zygosity", "zygospore", "zygote", "zygotic", "zygotically", "zylonite", "zymase", "zyme",
         "zymetologic", "zymetologist", "zymetology", "zymogen", "zymogenic", "zymogenous", "zymoid", "zymologic", "zymologist", "zymology", "zymolysis", "zymolytic", "zymome", "zymometer", "zymoscope",
-        "zymosimeter", "zymosis", "zymotechmy", "zymotechnics", "zymotic", "zymurgy", "zythumzythum"]
+        "zymosimeter", "zymosis", "zymotechmy", "zymotechnics", "zymotic", "zymurgy", "zythumzythum"
+    ]
     let result = []
     let res = shuffle(words)
     if (type === "char") {
@@ -653,5 +633,4 @@ const getRandomWords = () => {
     msgWord = result.length;
     return result.join(" ")
 }
-
 renderNewWords()
