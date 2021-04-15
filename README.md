@@ -4,8 +4,8 @@
 ## Links
 
 - [Live View](https://kingtechnologies.in/Typing%20Master)
-- [Github Page](https://rohit19060.github.io/typing_master/)
-- [Repo](https://github.com/Rohit19060/typing_master)
+- [Github Page](https://rohit19060.github.io/Typing_Master/)
+- [Repo](https://github.com/Rohit19060/Typing_Master)
 
 ## Screenshots
 
