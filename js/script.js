@@ -383,59 +383,64 @@ const blinkFun = (element) => {
 }
 const range = (val) => {
     let temp = document.getElementById(val.id).value;
-    if (val.id == "blinkControl") {
-        blink = blinkInput.checked;
-        setLocal("blink", blink)
-        const arr = main.querySelectorAll("span");
-        blinkFun(arr[curCount])
-    } else if (val.id == "capControl") {
-        capControl = capControlInput.checked;
-        if (capControl) {
-            charArray.push(...capitalCharArray);
-        } else {
-            charArray = charArray.filter((el) => !capitalCharArray.includes(el));
-            if (currentWord == currentWord.toUpperCase()) {
-                currentWord = "a";
-                setLocal("currentWord", currentWord);
-                currentWordInput.value = currentWord;
-                renderNewWords();
+    let semaphore = true;
+    switch (val.id) {
+        case "blinkControl":
+            blink = blinkInput.checked;
+            setLocal("blink", blink)
+            const arr = main.querySelectorAll("span");
+            blinkFun(arr[curCount])
+            semaphore = false;
+            break;
+        case "capControl":
+            capControl = capControlInput.checked;
+            if (capControl) {
+                charArray.push(...capitalCharArray);
+            } else {
+                charArray = charArray.filter((el) => !capitalCharArray.includes(el));
+                if (currentWord == currentWord.toUpperCase()) {
+                    currentWord = "a";
+                    setLocal("currentWord", currentWord);
+                    currentWordInput.value = currentWord;
+                    renderNewWords();
+                }
             }
-        }
-        setLocal("capControl", capControl);
-    } else {
-        switch (val.id) {
-            case "currentWord":
-                currentWord = temp;
-                setLocal("currentWord", currentWord);
-                currentWordInput.value = currentWord;
-                error = 0
-                errorElement.innerHTML = `Errors: ${error}`;
-                break;
-            case "msgWordCount":
-                msgWordCount = temp;
-                setLocal("msgWordCount", msgWordCount);
-                msgWordCounterSpan.innerText = msgWordCount;
-                break;
-            case "wordLength":
-                wordLength = temp;
-                setLocal("wordLength", wordLength);
-                wordLengthSpan.innerText = wordLength;
-                break;
-            case "char":
-                type = "char";
-                setLocal("type", "char");
-                currentWordDiv.classList.remove("hide");
-                wordDiv.classList.add("hide");
-                break
-            case "word":
-                type = "word";
-                setLocal("type", "word");
-                currentWordDiv.classList.add("hide");
-                wordDiv.classList.remove("hide");
-                break
-            default:
-                break;
-        }
+            setLocal("capControl", capControl);
+            semaphore = false;
+            break;
+        case "currentWord":
+            currentWord = temp;
+            setLocal("currentWord", currentWord);
+            currentWordInput.value = currentWord;
+            error = 0
+            errorElement.innerHTML = `Errors: ${error}`;
+            break;
+        case "msgWordCount":
+            msgWordCount = temp;
+            setLocal("msgWordCount", msgWordCount);
+            msgWordCounterSpan.innerText = msgWordCount;
+            break;
+        case "wordLength":
+            wordLength = temp;
+            setLocal("wordLength", wordLength);
+            wordLengthSpan.innerText = wordLength;
+            break;
+        case "char":
+            type = "char";
+            setLocal("type", "char");
+            currentWordDiv.classList.remove("hide");
+            wordDiv.classList.add("hide");
+            break
+        case "word":
+            type = "word";
+            setLocal("type", "word");
+            currentWordDiv.classList.add("hide");
+            wordDiv.classList.remove("hide");
+            break
+        default:
+            break;
+    }
+    if (semaphore) {
         renderNewWords();
     }
     document.getElementById(val.id).blur();
@@ -572,10 +577,18 @@ main.addEventListener("click", () => {
         main.classList.remove("disabled");
         msg.classList.add("hidden");
         msg.classList.remove("show");
+        const arr = main.querySelectorAll("span");
+        blinkFun(arr[curCount])
     } else {
         msg.classList.remove("hidden");
         msg.classList.add("show");
         main.classList.add("disabled");
+        const arr = main.querySelectorAll("span");
+        arr[curCount].classList.remove("blink");
+        if (blinkTimer) {
+            clearInterval(blinkTimer)
+            blinkTimer = null;
+        }
     }
 });
 const renderNewWords = () => {
