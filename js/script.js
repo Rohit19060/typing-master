@@ -1,6 +1,7 @@
 // Document Constants
 const avgSpeed = document.getElementById("avgSpeed");
 const blinkInput = document.getElementById("blinkControl");
+const capControlInput = document.getElementById("capControl");
 const charInput = document.getElementById("char");
 const currentWordDiv = document.getElementById("currentWordDiv");
 const currentWordInput = document.getElementById("currentWord");
@@ -17,7 +18,11 @@ const wordLengthSpan = document.getElementById("wordLengthValue");
 const wordSpan = document.getElementById("wordSpan");
 // Constants
 const symbols = [" ", ",", ".", "Backspace", "Delete", "'", '"']
-const charArray = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
+let charArray = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+const capitalCharArray = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+const numCharArray = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
+const symbolCharArray = [",", ":", ".", "?", "!", ";", "'", "\""];
+
 let words = ["article", "auxuliary", "abbey", "able", "about", "above", "absence", "absurd", "abuse", "accent", "acceptance", "accessoria", "accord", "account",
     "accountant", "accounting", "accusation", "accused", "achilles", "acid", "action", "activity", "actual", "acuminata", "added", "addition", "address",
     "adenoidea", "adjusted", "admiral", "admiralty", "adopt", "adorable", "advance", "advantage", "advice", "advised", "advisory", "aegis", "aemia", "affairs",
@@ -249,6 +254,7 @@ let words = ["article", "auxuliary", "abbey", "able", "about", "above", "absence
 ]
 // Variables
 let blink = true;
+let capControl = true;
 let curCount;
 let currentWord = "a";
 let error = 0;
@@ -330,6 +336,19 @@ if (getLocal("blink") === null) {
         blink = false
     }
 }
+if (getLocal("capControl") === null) {
+    setLocal("capControl", true);
+} else {
+    capControl = getLocal("capControl");
+    if (capControl == "true") {
+        capControlInput.checked = true;
+        capControl = true;
+        charArray.push(...capitalCharArray);
+    } else {
+        capControlInput.checked = false;
+        capControl = false
+    }
+}
 if (getLocal("type") === null) {
     setLocal("type", "char");
 } else {
@@ -369,6 +388,20 @@ const range = (val) => {
         setLocal("blink", blink)
         const arr = main.querySelectorAll("span");
         blinkFun(arr[curCount])
+    } else if (val.id == "capControl") {
+        capControl = capControlInput.checked;
+        if (capControl) {
+            charArray.push(...capitalCharArray);
+        } else {
+            charArray = charArray.filter((el) => !capitalCharArray.includes(el));
+            if (currentWord == currentWord.toUpperCase()) {
+                currentWord = "a";
+                setLocal("currentWord", currentWord);
+                currentWordInput.value = currentWord;
+                renderNewWords();
+            }
+        }
+        setLocal("capControl", capControl);
     } else {
         switch (val.id) {
             case "currentWord":
