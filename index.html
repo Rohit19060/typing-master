@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Typing Master</title>
-    <link rel="stylesheet" href="./css/style.css" />
 </head>
 
 <body>
@@ -14,18 +13,16 @@
         <h1 class="text-center mt-3"> King's Typing Master</h1>
         <div>
             <div class="centerDiv">
-                Words Count: <input type="range" id="msgWordCount" value="15" min="1" max="60" onchange="range(this)"
-                    step="1">
+                Words Count: <input type="range" id="msgWordCount" value="15" min="1" max="60" step="1">
                 <span id="msgWordCountValue">15</span>
             </div>
             <div class="centerDiv">
-                Word Length: <input type="range" id="wordLength" value="5" min="4" max="10" onchange="range(this)"
-                    step="1">
+                Word Length: <input type="range" id="wordLength" value="5" min="4" max="10" step="1">
                 <span id="wordLengthValue">5</span>
             </div>
             <div class="centerDiv">
-                Typing By: <input type="radio" id="char" name="type" onchange="range(this)" checked> Char
-                <input type="radio" id="word" name="type" onchange="range(this)"> Word
+                Typing By: <input type="radio" id="char" name="type" checked> Char
+                <input type="radio" id="word" name="type"> Word
             </div>
             <div class="results">
                 <div id="speed">Speed: 0.0</div>
@@ -33,8 +30,8 @@
                 <div id="error">Errors: 0</div>
             </div>
         </div>
-        <div>Blink On/Off <input type="checkbox" id="blinkControl" onchange="range(this)" checked></div>
-        <div>Capital Letter <input type="checkbox" id="capControl" onchange="range(this)" checked></div>
+        <div>Blink On/Off <input type="checkbox" id="blinkControl" checked></div>
+        <div>Capital Letter <input type="checkbox" id="capControl" checked></div>
         <div class="textInput-ment" id="main"></div>
         <div class="hidden my-2" id="msg">
             <h3>Click again to enable...</h3>
@@ -43,8 +40,7 @@
             Your Input:&nbsp; <span id="wordSpan"></span>
         </div>
         <div id="currentWordDiv">
-            Current Word: <input type="text" id="currentWord" onkeyup="range(this)" onInput="checkLength()" value="a"
-                class="mr-5">
+            Current Word: <input type="text" id="currentWord" value="a" class="mr-5">
         </div>
 
         <div class="centerDiv mx-5">
@@ -55,7 +51,7 @@
             </h4>
         </div>
     </section>
-    <script src="./js/script.js"></script>
+    <script src="main.js"></script>
 </body>
 
 </html>
