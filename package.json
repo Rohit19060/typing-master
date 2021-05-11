@@ -1,24 +1,30 @@
 {
-  "name": "typing_master",
+  "name": "typing-master",
   "version": "1.0.0",
   "description": "Enhance your Typing speed according to you",
-  "private": true,
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "webpack --watch",
-    "build": "webpack"
+  "author": {
+    "name": "Rohit Jain",
+    "email": "rohitjain19060@gmail.com",
+    "url": "https://kingtechnologies.in/"
   },
+  "main": "<main-server-file>",
+  "homepage": "https://kingtechnologies.in/Typing%20Master",
+  "private": true,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Rohit19060/Typing_Master.git"
+    "url": "https://github.com/Rohit19060/typing-master"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Rohit19060/Typing_Master/issues"
+    "url": "https://github.com/Rohit19060/typing-master/issues"
   },
-  "homepage": "https://github.com/Rohit19060/Typing_Master#readme",
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
+  "scripts": {
+    "start": "webpack serve --open chrome",
+    "build": "webpack",
+    "dev": "webpack --watch"
+  },
   "devDependencies": {
     "css-loader": "^5.2.4",
     "style-loader": "^2.0.0",
@@ -26,7 +32,28 @@
     "webpack-cli": "^4.6.0",
     "webpack-dev-server": "^3.11.2"
   },
-  "dependencies": {
-    "lodash": "^4.17.21"
-  }
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "engines": {
+    "node": ">= 15.7.0",
+    "npm": ">= 7.0.0",
+    "yarn": "^1.22.0"
+  },
+  "keywords": [
+    "typing",
+    "typing-master",
+    "speed-typing",
+    "enhance-typing"
+  ],
+  "license": "MIT"
 }

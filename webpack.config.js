@@ -7,6 +7,12 @@ module.exports = {
         filename: 'main.js',
         path: path.resolve(__dirname, ''),
     },
+    devtool: "inline-source-map",
+    devServer: {
+        inline: true,
+        port: 3000,
+
+    },
     module: {
         rules: [
             {

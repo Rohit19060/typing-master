@@ -1,0 +1,138 @@
+#typing-master {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    gap: 15px;
+    font-size: 16px;
+    min-height: calc(100vh - 60px);
+}
+
+.centerDiv {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 30px 0px;
+}
+
+input[type="text"] {
+    outline: none;
+    border: none;
+    background: transparent;
+    text-align: center;
+    padding-left: 5px;
+}
+
+.show {
+    visibility: visible;
+}
+
+.incorrect {
+    color: red;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.hide {
+    display: none;
+}
+
+.disabled {
+    color: rgba(126, 126, 126, 0.438);
+}
+
+.correct {
+    color: rgba(151, 151, 151, 0.562);
+}
+
+.blink {
+    background-color: black;
+    color: white;
+}
+
+.wrong {
+    color: white;
+}
+
+.wrongWord {
+    color: red;
+}
+
+.correctWord {
+    color: rgb(42, 182, 42);
+}
+
+#main {
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -youbkit-touch-callout: none;
+    -youbkit-user-select: none;
+    background-color: white;
+    border-radius: 25px;
+    box-shadow: -1px -1px 12px 3px rgba(232, 232, 232, 1);
+    font-size: 34px;
+    max-width: 90%;
+    padding: 20px;
+    user-select: none;
+    word-wrap: break-word;
+    margin: 10px 0px;
+}
+
+.word {
+    padding: 0px 5px;
+    border-radius: 6px;
+}
+
+@keyframes blinking {
+
+    from,
+    49.9% {
+        opacity: 1;
+    }
+
+    50%,
+    to {
+        opacity: 0;
+    }
+}
+
+#msgWordCount {
+    min-width: 54%;
+}
+
+#currentWord {
+    max-width: 30px;
+    border: 2px solid black;
+    padding: 0px 5px;
+    font-size: 20px;
+}
+
+.results {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 20px;
+    font-size: 28px;
+    text-shadow: 2px 1px 5px rgba(128, 128, 128, 0.466);
+}
+
+.results div {
+    border: 2px solid rgba(0, 0, 0, 0.199);
+    padding: 5px 10px;
+}
+
+#wordDiv {
+    text-align: center;
+    font-size: 28px;
+    text-shadow: 2px 1px 5px rgba(128, 128, 128, 0.466);
+}
+
+#wordDiv span {
+    border: 2px solid rgba(0, 0, 0, 0.199);
+    padding: 5px 10px;
+}
