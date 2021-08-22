@@ -17,19 +17,18 @@
   "bugs": {
     "url": "https://github.com/Rohit19060/typing-master/issues"
   },
-  "dependencies": {
-    "lodash": "^4.17.21"
-  },
   "scripts": {
     "start": "webpack serve --open chrome",
     "build": "webpack",
     "dev": "webpack --watch"
   },
   "devDependencies": {
-    "css-loader": "^5.2.4",
+    "css-loader": "^5.2.6",
+    "jquery": "^3.6.0",
+    "lodash": "^4.17.21",
     "style-loader": "^2.0.0",
-    "webpack": "^5.35.0",
-    "webpack-cli": "^4.6.0",
+    "webpack": "^5.38.1",
+    "webpack-cli": "^4.7.2",
     "webpack-dev-server": "^3.11.2"
   },
   "browserslist": {
